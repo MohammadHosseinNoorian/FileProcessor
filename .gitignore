@@ -1,0 +1,11 @@
+gitignore
+# Visual Studio
+.vs/
+
+# Build output
+bin/
+obj/
+
+# User settings
+*.user
+*.suo
