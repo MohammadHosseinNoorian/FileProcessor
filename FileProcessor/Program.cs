@@ -4,6 +4,9 @@ Console.WriteLine("** Welcome to file processor console app **");
 Console.WriteLine("*******************************************");
 Console.WriteLine("Add input file");
 Processor p = new Processor(Console.ReadLine());
+LineValidator validator = new LineValidator();
+p.TimeToValidate += validator.Validate;
+p.Process();
 while (true)
     DisplayMenu(p);
 
@@ -18,10 +21,10 @@ static void DisplayMenu(Processor p)
     switch (selectedn)
     {
         case 1:
-            p.Output();
+            p.Display();
             break;
         case 2:
-            p.Output();
+            p.Display();
             break;
         case 3: 
             Environment.Exit(0);
