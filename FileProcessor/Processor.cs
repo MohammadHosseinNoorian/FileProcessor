@@ -23,7 +23,7 @@ public class Processor
             _file = File.ReadAllLines(file);
             _dir = Path.GetDirectoryName(file);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             Console.WriteLine("Please change file.");
@@ -34,11 +34,11 @@ public class Processor
     {
         if (_file != null)
         {
-            for(int i = 1;i < _file.Length; i++)//skips first line(header)
+            for (int i = 1; i < _file.Length; i++)//skips first line(header)
             {
                 string[] line = _file[i].Split(",");
                 if (line.Length != 4) continue;//skips the lines that are not complete
-                int uprice = 0;int tprice = 0;
+                int uprice = 0; int tprice = 0;
                 LineValidator validationResult = TimeToValidate?.Invoke(line, out uprice, out tprice);
                 int id = int.TryParse(line[0], out var I) ? I : 0;
                 string name = line[1];
@@ -61,15 +61,11 @@ public class Processor
             Order maxorder = orders.MaxBy(o => o.TotalPrice);
             Console.WriteLine($"We have {succeedorders + failedorders} orders: fileds:{failedorders}, succeed:{succeedorders}");
             Console.WriteLine($"Max_Price order:{{id: {maxorder.Id}, Name: {maxorder.Name}, totalprice: {maxorder.TotalPrice}}}");
-            Console.WriteLine("Press Enter to go back to the menu");
-            Console.ReadLine();
         }
         else
-        {
             Console.WriteLine("Please change file.");
-            Console.WriteLine("Press Enter to go back to the menu");
-            Console.ReadLine();
-        }
+        Console.WriteLine("Press Enter to go back to the menu");
+        Console.ReadLine();
     }
     public void WriteCSVFile()
     {
@@ -94,11 +90,9 @@ public class Processor
             Console.WriteLine("Finished. The files succeedorders.csv and failedorders.csv have been created next to your input file.");
         }
         else
-        {
             Console.WriteLine("Please change file.");
-            Console.WriteLine("Press Enter to go back to the menu");
-            Console.ReadLine();
-        }
-    }
+        Console.WriteLine("Press Enter to go back to the menu");
+        Console.ReadLine();
 
+    }
 }
