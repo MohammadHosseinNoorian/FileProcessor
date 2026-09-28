@@ -12,21 +12,28 @@ while (true)
 
 static void DisplayMenu(Processor p)
 {
-    Console.WriteLine("1. get output");
-    Console.WriteLine("2. get output as CSV file");
-    Console.WriteLine("3. Exit");
-    Console.WriteLine("Choose what you want to do(1-3)");
+    Console.WriteLine("1. change file");
+    Console.WriteLine("2. Display output");
+    Console.WriteLine("3. get output as CSV file");
+    Console.WriteLine("4. Exit");
+    Console.WriteLine("Please choose an option (1-4):");
     int selectedn = int.Parse(Console.ReadLine());
-    Console.WriteLine($"selectedn= {selectedn}");
     switch (selectedn)
     {
         case 1:
-            p.Display();
+            Console.WriteLine("Add input file");
+            p = new Processor(Console.ReadLine());
+            LineValidator validator = new LineValidator();
+            p.TimeToValidate += validator.Validate;
+            p.Process();
             break;
         case 2:
             p.Display();
             break;
-        case 3: 
+        case 3:
+            p.WriteCSVFile();
+            break;
+        case 4: 
             Environment.Exit(0);
             break;
     }

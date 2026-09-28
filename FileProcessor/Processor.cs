@@ -13,6 +13,7 @@ public class Processor
 {
     private List<Order> orders = new List<Order>();
     private string[] _file;
+    private string _dir;
     public event ValidationHandler? TimeToValidate;
 
     public Processor(string file)
@@ -20,10 +21,12 @@ public class Processor
         try
         {
             _file = File.ReadAllLines(file);
+            _dir = Path.GetDirectoryName(file);
         }
         catch(Exception ex)
         {
             Console.WriteLine(ex.Message);
+            Console.WriteLine("Please change file.");
         }
     }
     public Processor() { }
@@ -47,12 +50,55 @@ public class Processor
     }
     public void Display()
     {
-        foreach (Order o in orders)
+        if (_file != null)
         {
-            Console.WriteLine(o.ToString());
-            
+            foreach (Order o in orders)
+            {
+                Console.WriteLine(o.ToString());
+            }
+            int failedorders = (from o in orders where o.IsValid == false select o).Count();
+            int succeedorders = (from o in orders where o.IsValid == true select o).Count();
+            Order maxorder = orders.MaxBy(o => o.TotalPrice);
+            Console.WriteLine($"We have {succeedorders + failedorders} orders: fileds:{failedorders}, succeed:{succeedorders}");
+            Console.WriteLine($"Max_Price order:{{id: {maxorder.Id}, Name: {maxorder.Name}, totalprice: {maxorder.TotalPrice}}}");
+            Console.WriteLine("Press Enter to go back to the menu");
+            Console.ReadLine();
         }
-        Console.ReadLine();
+        else
+        {
+            Console.WriteLine("Please change file.");
+            Console.WriteLine("Press Enter to go back to the menu");
+            Console.ReadLine();
+        }
     }
-    
+    public void WriteCSVFile()
+    {
+        if (_file != null)
+        {
+            string succeedfilepath = _dir + @"\succeedorders.csv";
+            string failedfilepath = _dir + @"\failedorders.csv";
+            StringBuilder failedfiletext = new StringBuilder();
+            StringBuilder succeedfiletext = new StringBuilder();
+            failedfiletext.AppendLine("id,name,product,quantity,reasons");
+            succeedfiletext.AppendLine("id,name,product,quantity,totalprice");
+            Console.WriteLine("writing files ....");
+            foreach (Order o in orders)
+            {
+                if (o.IsValid == false)
+                    failedfiletext.AppendLine($"{o.Id},{o.Name},{o.Product},{o.Quantity},{o.IsValid_Reasons}");
+                else
+                    succeedfiletext.AppendLine($"{o.Id},{o.Name},{o.Product},{o.Quantity},{o.TotalPrice}");
+            }
+            File.WriteAllText(failedfilepath, failedfiletext.ToString());
+            File.WriteAllText(succeedfilepath, succeedfiletext.ToString());
+            Console.WriteLine("Finished. The files succeedorders.csv and failedorders.csv have been created next to your input file.");
+        }
+        else
+        {
+            Console.WriteLine("Please change file.");
+            Console.WriteLine("Press Enter to go back to the menu");
+            Console.ReadLine();
+        }
+    }
+
 }
