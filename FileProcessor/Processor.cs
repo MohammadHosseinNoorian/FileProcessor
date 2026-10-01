@@ -37,7 +37,6 @@ public class Processor
             for (int i = 1; i < _file.Length; i++)//skips first line(header)
             {
                 string[] line = _file[i].Split(",");
-                if (line.Length != 4) continue;//skips the lines that are not complete
                 int uprice = 0; int tprice = 0;
                 LineValidator validationResult = TimeToValidate?.Invoke(line, out uprice, out tprice);
                 int id = int.TryParse(line[0], out var I) ? I : 0;
@@ -60,7 +59,7 @@ public class Processor
             int succeedorders = (from o in orders where o.IsValid == true select o).Count();
             Order maxorder = orders.MaxBy(o => o.TotalPrice);
             Console.WriteLine($"We have {succeedorders + failedorders} orders: fileds:{failedorders}, succeed:{succeedorders}");
-            Console.WriteLine($"Max_Price order:{{id: {maxorder.Id}, Name: {maxorder.Name}, totalprice: {maxorder.TotalPrice}}}");
+            Console.WriteLine($"Max_Price order:{{id: {maxorder?.Id}, Name: {maxorder?.Name}, totalprice: {maxorder?.TotalPrice}}}");
         }
         else
             Console.WriteLine("Please change file.");
